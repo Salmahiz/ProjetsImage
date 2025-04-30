@@ -1,7 +1,5 @@
-
 #ifndef _COLOR_H
 #define _COLOR_H
-
 
 //! \addtogroup image
 ///@{
@@ -14,11 +12,16 @@ struct Color
 {
     //! constructeur par defaut.
     Color( ) : r(0.f), g(0.f), b(0.f), a(1.f) {}
-    explicit Color( const float _r, const float _g, const float _b, const float _a= 1.f ) : r(_r), g(_g), b(_b), a(_a) {}
-    explicit Color( const float _value ) : r(_value), g(_value), b(_value), a(1.f) {}
+
+    explicit Color( const float _r, const float _g, const float _b, const float _a= 1.f ) 
+        : r(_r), g(_g), b(_b), a(_a) {}
+
+    explicit Color( const float _value ) 
+        : r(_value), g(_value), b(_value), a(1.f) {}
     
     //! cree une couleur avec les memes composantes que color, mais remplace sa composante alpha (color.r, color.g, color.b, alpha).
-    Color( const Color& color, const float alpha ) : r(color.r), g(color.g), b(color.b), a(alpha) {}  // remplace alpha.
+    Color( const Color& color, const float alpha ) 
+        : r(color.r), g(color.g), b(color.b), a(alpha) {}  // remplace alpha
     
     float power( ) const;
     float max( ) const;
@@ -48,6 +51,12 @@ Color operator* ( const float k, const Color& c );
 Color operator/ ( const Color& a, const Color& b );
 Color operator/ ( const float k, const Color& c );
 Color operator/ ( const Color& c, const float k );
+
+// transformation couleur : rgb lineaire vers srgb
+Color srgb( const Color& color, const float g= float(2.2) );  // vers srgb
+
+// transformation couleur : srgb vers rgb lineaire
+Color linear( const Color& color, const float g= float(2.2) );  // vers lineaire
 
 ///@}
 #endif

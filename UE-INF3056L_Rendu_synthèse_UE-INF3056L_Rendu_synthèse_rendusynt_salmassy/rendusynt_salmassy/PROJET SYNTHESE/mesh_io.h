@@ -84,7 +84,7 @@ on peut recuperer directement les sommets du triangle numero id :
     Point c= positions[ indices[ 3*id +2 ] ];
 \endcode
 */
-bool read_indexed_positions( const char *filename, std::vector<Point>& positions, std::vector<int>& indices );
+bool read_indexed_positions( const char *filename, std::vector<Point>& positions, std::vector<unsigned>& indices );
 
 
 /*! charge les matieres associees aux triangles d'un fichier .obj / wavefront. renvoie l'ensemble de matieres et l'indice de la matiere pour chaque triangle.
@@ -157,16 +157,30 @@ exemple :
 bool read_images( const Materials& materials, std::vector<Image>& images );
 
 
+struct MeshIOGroup
+{
+    int id;
+    unsigned first;
+    unsigned count;
+};
+
 struct MeshIOData
 {
     std::vector<Point> positions;
     std::vector<Point> texcoords;
     std::vector<Vector> normals;
-    std::vector<int> indices;
-    std::vector<int> material_indices;
+    std::vector<unsigned> indices;
     
     Materials materials;
-    std::vector<Image> images;
+    std::vector<int> material_indices;
+    
+    std::vector<std::string> object_names;
+    std::vector<int> object_indices;
+  
+    int find_object( const char *name );
+    std::vector<MeshIOGroup> sort_by_material( ) { return groups(material_indices); }
+    std::vector<MeshIOGroup> sort_by_object( ) { return groups(object_indices); }
+    std::vector<MeshIOGroup> groups( const std::vector<int>& properties );
 };
 
 /*! charge tous les attributs et les matieres. en une seule fois.
@@ -210,10 +224,9 @@ utiliser read_meshio_data() est equivalent a :
 
     mais toutes les infos sont chargees en seule fois, et sont stockees dans une seule structure, cf MeshIOData, plus simple a manipuler.
 */
-MeshIOData read_meshio_data( const char *filename );
+bool read_meshio_data( const char *filename, MeshIOData& data );
 
-//! charge les images referencees par les matieres de l'objet. 
-bool read_images( MeshIOData& data );
+bool read_images( const MeshIOData& data, std::vector<Image>& images );
 
 ///@}
 
